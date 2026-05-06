@@ -1,0 +1,80 @@
+# -----------------------------------------------------------
+# 1. Import Required Libraries
+# -----------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+
+
+# -----------------------------------------------------------
+# 2. Dataset Description
+# -----------------------------------------------------------
+# Dataset: Iris Dataset
+# Source: https://www.kaggle.com/datasets/uciml/iris
+# Description:
+# Contains measurements of iris flowers:
+# SepalLengthCm, SepalWidthCm, PetalLengthCm, PetalWidthCm, Species
+
+
+# -----------------------------------------------------------
+# 3. Load Dataset
+# -----------------------------------------------------------
+
+df = pd.read_csv("iris.csv")
+
+# Clean column names (remove spaces if any)
+
+df.columns = df.columns.str.strip()
+
+print("First 5 rows:\n", df.head())
+
+
+# -----------------------------------------------------------
+# PART 1:
+# Summary statistics grouped by categorical variable
+# -----------------------------------------------------------
+# Categorical variable: Species
+# Numerical variable: SepalLengthCm
+
+grouped_stats = df.groupby('Species')['SepalLengthCm'].agg(
+    ['mean', 'median', 'min', 'max', 'std']
+)
+
+print("\nSummary Statistics (Sepal Length grouped by Species):\n")
+print(grouped_stats)
+
+
+# Create list of numeric values for each category
+
+value_list = df.groupby('Species')['SepalLengthCm'].apply(list)
+
+print("\nList of Sepal Length values for each Species:\n")
+print(value_list)
+
+
+# -----------------------------------------------------------
+# PART 2:
+# Statistical details for each species separately
+# -----------------------------------------------------------
+
+# Filtering dataset by species
+
+setosa = df[df['Species'] == 'Iris-setosa']
+versicolor = df[df['Species'] == 'Iris-versicolor']
+virginica = df[df['Species'] == 'Iris-virginica']
+
+
+# Function to display statistics
+
+def show_stats(data, name):
+    print(f"\nStatistics for {name}:\n")
+    print("Mean:\n", data.mean(numeric_only=True))
+    print("\nStandard Deviation:\n", data.std(numeric_only=True))
+    print("\nPercentiles:\n", data.quantile([0.25, 0.5, 0.75], numeric_only=True))
+
+
+# Display stats for each species
+
+show_stats(setosa, "Iris-setosa")
+show_stats(versicolor, "Iris-versicolor")
+show_stats(virginica, "Iris-virginica")
