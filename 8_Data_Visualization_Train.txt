@@ -1,0 +1,82 @@
+# -----------------------------------------------------------
+# Data Visualization - Titanic Dataset
+# -----------------------------------------------------------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load dataset
+titanic = sns.load_dataset('titanic')
+
+# Basic info
+print(titanic.head())
+print("\nShape:", titanic.shape)
+
+
+# -----------------------------------------------------------
+# 1. Pattern Analysis
+# -----------------------------------------------------------
+
+# Survival by Gender
+plt.figure(figsize=(6,4))
+sns.countplot(x='sex', hue='survived', data=titanic)
+plt.title('Survival Pattern by Gender')
+plt.xlabel('Gender')
+plt.ylabel('Count')
+plt.show()
+
+
+# Survival by Passenger Class
+plt.figure(figsize=(6,4))
+sns.countplot(x='pclass', hue='survived', data=titanic)
+plt.title('Survival Pattern by Passenger Class')
+plt.xlabel('Class')
+plt.ylabel('Count')
+plt.show()
+
+
+# Survival by Embark Town (extra insight)
+plt.figure(figsize=(6,4))
+sns.countplot(x='embark_town', hue='survived', data=titanic)
+plt.title('Survival by Embark Town')
+plt.xticks(rotation=30)
+plt.show()
+
+
+# -----------------------------------------------------------
+# Age Distribution
+# -----------------------------------------------------------
+
+plt.figure(figsize=(6,4))
+sns.histplot(titanic['age'].dropna(), bins=30, kde=True)
+plt.title('Age Distribution')
+plt.xlabel('Age')
+plt.show()
+
+
+# -----------------------------------------------------------
+# 2. Fare Distribution (Main Requirement)
+# -----------------------------------------------------------
+
+plt.figure(figsize=(8,5))
+sns.histplot(titanic['fare'], bins=30, kde=True)
+plt.title('Distribution of Ticket Fare')
+plt.xlabel('Fare')
+plt.ylabel('Number of Passengers')
+plt.show()
+
+
+# -----------------------------------------------------------
+# Extra (Better Visualization for Marks)
+# -----------------------------------------------------------
+
+# Boxplot: Fare vs Class
+plt.figure(figsize=(6,4))
+sns.boxplot(x='pclass', y='fare', data=titanic)
+plt.title('Fare Distribution by Class')
+plt.show()
+
+
+# Pairplot (shows relationships)
+sns.pairplot(titanic[['age','fare','pclass','survived']].dropna(), hue='survived')
+plt.show()
