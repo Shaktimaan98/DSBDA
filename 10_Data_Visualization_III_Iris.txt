@@ -1,0 +1,57 @@
+# -----------------------------------------------------------
+# Data Visualization III - Iris Dataset
+# -----------------------------------------------------------
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# -----------------------------------------------------------
+# Load Dataset
+# -----------------------------------------------------------
+df = sns.load_dataset('iris')
+
+print("First 5 rows:\n", df.head())
+
+
+# -----------------------------------------------------------
+# 1. Features and their types
+# -----------------------------------------------------------
+print("\nFeature Types:\n")
+print(df.dtypes)
+
+# Manual explanation:
+# sepal_length -> numeric
+# sepal_width -> numeric
+# petal_length -> numeric
+# petal_width -> numeric
+# species -> categorical (nominal)
+
+
+# -----------------------------------------------------------
+# 2. Histogram for each feature
+# -----------------------------------------------------------
+df.hist(figsize=(8,6))
+plt.suptitle("Histograms of Iris Features")
+plt.show()
+
+
+# -----------------------------------------------------------
+# 3. Boxplot for each feature
+# -----------------------------------------------------------
+plt.figure(figsize=(10,6))
+
+# Boxplot for all numeric features
+df.boxplot()
+
+plt.title("Boxplot of Iris Features")
+plt.show()
+
+
+# -----------------------------------------------------------
+# 4. Compare distributions & identify outliers
+# -----------------------------------------------------------
+
+# Pairplot for better comparison
+sns.pairplot(df, hue='species')
+plt.show()
