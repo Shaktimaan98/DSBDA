@@ -1,0 +1,118 @@
+# -----------------------------------------------------------
+# Import required libraries
+# -----------------------------------------------------------
+
+import nltk
+import string
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# Download necessary NLTK resources (run once)
+
+nltk.download('punkt')   # for tokenization
+nltk.download('stopwords')   # for stop word removal
+nltk.download('averaged_perceptron_tagger')   # for POS tagging
+nltk.download('wordnet')   # for lemmatization
+
+
+# -----------------------------------------------------------
+# Sample document
+# -----------------------------------------------------------
+
+document = "Data science is an amazing field. It uses statistics, programming, and machine learning to analyze data."
+print(document)
+
+
+# -----------------------------------------------------------
+# Tokenization (splitting text into words)
+# -----------------------------------------------------------
+
+from nltk.tokenize import word_tokenize
+
+tokens = word_tokenize(document)
+print(*tokens)
+
+
+# -----------------------------------------------------------
+# POS Tagging (assigning grammatical tags)
+# -----------------------------------------------------------
+
+from nltk import pos_tag
+
+pos_tags = pos_tag(tokens)
+print(*pos_tags)
+
+
+# -----------------------------------------------------------
+# Stop Words Removal (removing common words like 'is', 'the')
+# -----------------------------------------------------------
+
+from nltk.corpus import stopwords
+
+stop_words = set(stopwords.words('english'))
+
+# Remove stopwords and punctuation (only keep alphabetic words)
+
+filtered_words = [word for word in tokens if word.lower() not in stop_words and word.isalpha()]
+print(*filtered_words)
+
+
+# -----------------------------------------------------------
+# Stemming (reducing words to root form)
+# -----------------------------------------------------------
+
+from nltk.stem import PorterStemmer
+
+stemmer = PorterStemmer()
+
+stemmed_words = [stemmer.stem(word) for word in filtered_words]
+print(*stemmed_words)
+
+
+# -----------------------------------------------------------
+# Lemmatization (converting words to meaningful base form)
+# -----------------------------------------------------------
+
+from nltk.stem import WordNetLemmatizer
+
+lemmatizer = WordNetLemmatizer()
+
+lemmatized_words = [lemmatizer.lemmatize(word) for word in filtered_words]
+print(*lemmatized_words)
+
+
+# -----------------------------------------------------------
+# TF-IDF Representation
+# -----------------------------------------------------------
+# Creating multiple documents for TF-IDF calculation
+
+documents = [
+    "Data science uses statistics and programming",
+    "Machine learning is part of data science",
+    "Python is widely used in data science"
+]
+
+# Initialize TF-IDF vectorizer
+
+vectorizer = TfidfVectorizer()
+
+# Fit and transform documents into TF-IDF matrix
+
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+# Get feature (word) names
+
+feature_names = vectorizer.get_feature_names_out()
+
+# Display results
+
+print("Features:", *feature_names)
+print("\nTF-IDF Values:")
+print(tfidf_matrix.toarray())
+
+
+# -----------------------------------------------------------
+# Additional resource for lemmatization (WordNet data)
+# -----------------------------------------------------------
+
+import nltk
+nltk.download('omw-1.4')
