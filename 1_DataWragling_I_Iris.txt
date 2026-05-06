@@ -1,0 +1,120 @@
+# -----------------------------------------------------------
+# 1. Import Required Libraries
+# -----------------------------------------------------------
+# pandas -> for data handling and analysis
+# numpy -> for numerical operations
+
+import pandas as pd
+import numpy as np
+
+
+# -----------------------------------------------------------
+# 2. Dataset Description and Source
+# -----------------------------------------------------------
+# Dataset: Iris Dataset
+# Source: https://www.kaggle.com/datasets/uciml/iris
+# Description:
+# The Iris dataset contains measurements of iris flowers.
+# It includes the following features:
+# - SepalLengthCm (Numerical)
+# - SepalWidthCm (Numerical)
+# - PetalLengthCm (Numerical)
+# - PetalWidthCm (Numerical)
+# - Species (Categorical: Iris-setosa, Iris-versicolor, Iris-virginica)
+
+
+# -----------------------------------------------------------
+# 3. Load Dataset into Pandas DataFrame
+# -----------------------------------------------------------
+
+df = pd.read_csv("iris.csv")
+
+# Display first 5 rows
+print("First 5 rows of dataset:")
+print(df.head())
+
+
+# -----------------------------------------------------------
+# 4. Data Preprocessing
+# -----------------------------------------------------------
+
+# Check for missing values
+print("\nMissing values in dataset:")
+print(df.isnull().sum())
+
+# Get statistical summary of numerical columns
+print("\nStatistical summary:")
+print(df.describe())
+
+# Get information about dataset (data types, non-null values)
+print("\nDataset info:")
+print(df.info())
+
+# Get column names
+print("\nColumn names:")
+print(df.columns)
+
+# Check dimensions of dataset (rows, columns)
+print("\nShape of dataset:")
+print(df.shape)
+
+# Variable Types Explanation:
+# Numerical Variables: SepalLengthCm, SepalWidthCm, PetalLengthCm, PetalWidthCm
+# Categorical Variable: Species
+
+
+# -----------------------------------------------------------
+# 5. Data Formatting and Normalization
+# -----------------------------------------------------------
+
+# Check current data types
+print("\nData types before conversion:")
+print(df.dtypes)
+
+# Convert data types if necessary
+df['SepalLengthCm'] = df['SepalLengthCm'].astype(float)
+df['PetalLengthCm'] = df['PetalLengthCm'].astype(float)
+
+print("\nData types after conversion:")
+print(df.dtypes)
+
+# Normalization (Min-Max Scaling)
+# Formula: (X - min) / (max - min)
+
+df['SepalLength_norm'] = (
+    df['SepalLengthCm'] - df['SepalLengthCm'].min()
+) / (
+    df['SepalLengthCm'].max() - df['SepalLengthCm'].min()
+)
+
+df['PetalLength_norm'] = (
+    df['PetalLengthCm'] - df['PetalLengthCm'].min()
+) / (
+    df['PetalLengthCm'].max() - df['PetalLengthCm'].min()
+)
+
+print("\nAfter normalization:")
+print(df[['SepalLength_norm', 'PetalLength_norm']].head())
+
+
+# -----------------------------------------------------------
+# 6. Convert Categorical Variables into Numerical
+# -----------------------------------------------------------
+
+# Convert Species (categorical) into numeric using mapping
+df['Species'] = df['Species'].map({
+    'Iris-setosa': 0,
+    'Iris-versicolor': 1,
+    'Iris-virginica': 2
+})
+
+print("\nAfter converting categorical to numerical:")
+print(df.head())
+
+
+# -----------------------------------------------------------
+# Final Dataset Preview
+# -----------------------------------------------------------
+
+print("\nFinal dataset preview:")
+print(df.head())
