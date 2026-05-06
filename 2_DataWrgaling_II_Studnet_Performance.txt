@@ -1,0 +1,104 @@
+# -----------------------------------------------------------
+# 1. Import Libraries
+# -----------------------------------------------------------
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns 
+
+
+# -----------------------------------------------------------
+# 2. Dataset Description
+# -----------------------------------------------------------
+# Dataset: Students Performance Dataset
+# Source: https://www.kaggle.com/datasets/spscientist/students-performance-in-exams
+# Description:
+# Contains student scores in math, reading, and writing along with demographic details.
+
+
+# -----------------------------------------------------------
+# 3. Load Dataset
+# -----------------------------------------------------------
+
+df = pd.read_csv('StudentsPerformance.csv')
+
+print(df.head())
+
+
+# -----------------------------------------------------------
+# 4. Missing Values & Inconsistencies
+# -----------------------------------------------------------
+
+print("Missing Values:\n", df.isnull().sum())
+
+# Display dataset info
+
+df.info()
+
+# Handling missing values by removing rows
+# Reason: Dataset is large enough, so dropping does not affect analysis significantly
+
+df.dropna(inplace=True)
+
+
+# -----------------------------------------------------------
+# 5. Outlier Detection & Handling (IQR Method)
+# -----------------------------------------------------------
+# Reason: IQR is robust and works well for skewed data
+
+for col in ['math score', 'reading score', 'writing score']:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+
+    lower = Q1 - 1.5 * IQR
+    upper = Q3 + 1.5 * IQR
+
+    df[col] = df[col].clip(lower, upper)
+
+
+# -----------------------------------------------------------
+# 6. Data Transformation (Log Transformation)
+# -----------------------------------------------------------
+# Reason:
+# - Reduces skewness
+# - Helps in normalizing distribution
+
+
+sns.histplot(df['writing score'], kde=True)
+plt.title("Before Log Transformation")
+plt.show()
+
+df['writing score log'] = np.log1p(df['writing score'])
+
+sns.histplot(df['writing score log'], kde=True)
+plt.title("After Log Transformation")
+plt.show()
+
+
+# -----------------------------------------------------------
+# 7. Boxplot for Outlier Visualization
+# -----------------------------------------------------------
+
+
+col = ['math score', 'reading score', 'writing score']
+df.boxplot(col)
+plt.title("Boxplot After Outlier Handling")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
