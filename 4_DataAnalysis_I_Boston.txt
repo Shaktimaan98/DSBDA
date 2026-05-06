@@ -1,0 +1,189 @@
+# -----------------------------------------------------------
+# 1. Import Required Libraries
+# -----------------------------------------------------------
+# pandas -> data handling
+# numpy -> numerical operations
+# matplotlib & seaborn -> visualization
+# sklearn -> machine learning tools
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.preprocessing import StandardScaler
+
+
+# -----------------------------------------------------------
+# 2. Dataset Description
+# -----------------------------------------------------------
+# Dataset: Boston Housing Dataset
+# Source: https://www.kaggle.com/c/boston-housing
+# Description:
+# The dataset contains 506 records of houses in Boston.
+# It includes 14 features such as crime rate, number of rooms,
+# tax rate, etc. The target variable MEDV represents
+# the median value of owner-occupied homes.
+
+
+# -----------------------------------------------------------
+# 3. Load Dataset
+# -----------------------------------------------------------
+# Check if file exists to avoid runtime error
+
+if not os.path.exists("boston.csv"):
+    raise FileNotFoundError("Dataset file not found!")
+
+df = pd.read_csv("boston.csv")
+
+# Clean column names (remove spaces if any)
+
+df.columns = df.columns.str.strip()
+
+print("First 5 rows:\n", df.head())
+
+
+# -----------------------------------------------------------
+# 4. Basic Data Exploration
+# -----------------------------------------------------------
+
+print("\nShape:", df.shape)
+print("\nColumns:\n", df.columns)
+
+# Check missing values
+
+print("\nMissing values:\n", df.isnull().sum())
+
+# Statistical summary
+
+print("\nStatistical Summary:\n", df.describe())
+
+
+# -----------------------------------------------------------
+# 5. Correlation Analysis (Extra Marks)
+# -----------------------------------------------------------
+
+plt.figure(figsize=(10,8))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm")
+plt.title("Feature Correlation Heatmap")
+plt.show()
+
+
+# -----------------------------------------------------------
+# 6. Feature Selection
+# -----------------------------------------------------------
+# Selecting target variable (MEDV)
+
+if "MEDV" in df.columns:
+    X = df.drop("MEDV", axis=1)
+    y = df["MEDV"]
+elif "medv" in df.columns:
+    X = df.drop("medv", axis=1)
+    y = df["medv"]
+else:
+    raise Exception("Target column not found!")
+
+print("\nTarget column selected successfully!")
+
+
+# -----------------------------------------------------------
+# 7. Feature Scaling
+# -----------------------------------------------------------
+# Standardizing features so that all values are on same scale
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+# -----------------------------------------------------------
+# 8. Train-Test Split
+# -----------------------------------------------------------
+# Splitting data into 80% training and 20% testing
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42
+)
+
+print("\nTraining shape:", X_train.shape)
+print("Testing shape:", X_test.shape)
+
+
+# -----------------------------------------------------------
+# 9. Model Building (Linear Regression)
+# -----------------------------------------------------------
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+print("\nModel trained successfully!")
+
+
+# -----------------------------------------------------------
+# 10. Prediction
+# -----------------------------------------------------------
+
+y_pred = model.predict(X_test)
+
+
+# -----------------------------------------------------------
+# 11. Model Evaluation
+# -----------------------------------------------------------
+# MSE -> average squared error
+# RMSE -> error in original units
+# R2 -> goodness of fit
+
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+
+print("\n===== MODEL PERFORMANCE =====")
+print("Mean Squared Error:", mse)
+print("Root Mean Squared Error:", rmse)
+print("R2 Score:", r2)
+
+print("\nR2 Interpretation:")
+print("Closer to 1 = Good model")
+print("Closer to 0 = Poor model")
+
+
+# -----------------------------------------------------------
+# 12. Model Parameters
+# -----------------------------------------------------------
+
+print("\nIntercept:", model.intercept_)
+
+# Feature importance (coefficients)
+
+coefficients = pd.DataFrame(model.coef_, X.columns, columns=["Coefficient"])
+print("\n===== FEATURE IMPORTANCE =====")
+print(coefficients)
+
+
+# -----------------------------------------------------------
+# 13. Visualization (Actual vs Predicted)
+# -----------------------------------------------------------
+
+plt.figure(figsize=(6,6))
+plt.scatter(y_test, y_pred, color="blue")
+plt.xlabel("Actual Prices")
+plt.ylabel("Predicted Prices")
+plt.title("Actual vs Predicted Prices")
+plt.show()
+
+
+# -----------------------------------------------------------
+# 14. Residual Analysis
+# -----------------------------------------------------------
+# Residual = Actual - Predicted
+
+residuals = y_test - y_pred
+
+plt.figure(figsize=(6,4))
+sns.histplot(residuals, kde=True, color="green")
+plt.title("Residual Distribution")
+plt.xlabel("Error")
+plt.show()
