@@ -1,0 +1,75 @@
+# -----------------------------------------------------------
+# Naive Bayes on Iris Dataset
+# -----------------------------------------------------------
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix
+
+
+# Dataset: Iris
+# Contains flower measurements and species
+df = pd.read_csv("iris.csv")
+
+print(df.head())
+
+
+# Features and target
+X = df.drop("Species", axis=1)
+y = df["Species"]
+
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+
+# Train model
+model = GaussianNB()
+model.fit(X_train, y_train)
+
+
+# Prediction
+y_pred = model.predict(X_test)
+
+
+# -----------------------------------------------------------
+# Confusion Matrix
+# -----------------------------------------------------------
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:\n", cm)
+
+
+# NOTE:
+# Iris is multi-class (3 classes), so confusion matrix is 3x3
+# For simplicity, we calculate metrics for one class (Iris-setosa)
+
+TP = cm[0][0]
+FP = cm[1][0] + cm[2][0]
+FN = cm[0][1] + cm[0][2]
+TN = cm.sum() - (TP + FP + FN)
+
+print("\nFor class: Iris-setosa")
+print("TP:", TP)
+print("FP:", FP)
+print("TN:", TN)
+print("FN:", FN)
+
+
+# -----------------------------------------------------------
+# Performance Metrics
+# -----------------------------------------------------------
+
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+error_rate = (FP + FN) / (TP + TN + FP + FN)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+
+print("\nAccuracy:", accuracy)
+print("Error Rate:", error_rate)
+print("Precision:", precision)
+print("Recall:", recall)
