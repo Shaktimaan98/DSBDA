@@ -1,0 +1,71 @@
+# -----------------------------------------------------------
+# Logistic Regression on Social_Network_Ads Dataset
+# -----------------------------------------------------------
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix
+
+
+# Dataset: Social Network Ads
+# (Contains Age, EstimatedSalary, Purchased)
+df = pd.read_csv("Social_Network_Ads.csv")
+
+print(df.head())
+
+
+# Select features and target
+X = df[['Age', 'EstimatedSalary']]
+y = df['Purchased']
+
+
+# Split dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+
+# Train model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+
+# Prediction
+y_pred = model.predict(X_test)
+
+
+# -----------------------------------------------------------
+# Confusion Matrix
+# -----------------------------------------------------------
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:\n", cm)
+
+# Extract values
+TN = cm[0][0]
+FP = cm[0][1]
+FN = cm[1][0]
+TP = cm[1][1]
+
+print("\nTP:", TP)
+print("FP:", FP)
+print("TN:", TN)
+print("FN:", FN)
+
+
+# -----------------------------------------------------------
+# Performance Metrics
+# -----------------------------------------------------------
+
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+error_rate = (FP + FN) / (TP + TN + FP + FN)
+precision = TP / (TP + FP)
+recall = TP / (TP + FN)
+
+print("\nAccuracy:", accuracy)
+print("Error Rate:", error_rate)
+print("Precision:", precision)
+print("Recall:", recall)
